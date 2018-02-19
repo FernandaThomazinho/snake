@@ -5,10 +5,12 @@ var gridRows = 16;
 var cron = null;
 var snake = [[2,3], [1,3], [1,2], [1,1]];
 var direction = "r";
-var food = [4,3];
+var food = [];
+generateFood();
 var gridCells = getGridCells();
 var grid = gridToMatrix(gridCells, gridCols, gridRows);
 var speed = 1;
+var points = 0;
 render();
 
 function getGridCells() {
@@ -24,6 +26,7 @@ function restart() {
     speed = 1;
     clearInterval(cron);
     cron = null;
+    points = 0;
     render();
 }
 
@@ -140,8 +143,29 @@ function moveFoward () {
 }
 
 function eat () {
-    snake.unshift(getNextCell());
+    points ++;
+    snakeGrow();
+    generateFood();
+    speedUp();
     render();
+}
+
+function speedUp () {
+    speed *= 0.9;
+}
+
+function generateFood () {
+    var row = Math.ceil(Math.random()*(gridRows-1));
+    var col = Math.ceil(Math.random()*(gridCols-1));
+    while (isSnakeCell([row,col]) || isFoodCell([row,col])) {
+        row = Math.ceil(Math.random()*(gridRows-1));
+        col = Math.ceil(Math.random()*(gridCols-1));
+    }
+    food = [row,col];
+}
+
+function snakeGrow () {
+    snake.unshift(getNextCell());
 }
 
 function lose () {
@@ -166,4 +190,5 @@ function render () {
     row = food[0];
     col = food[1];
     $(grid[row][col]).addClass("food-cell");
+    $(".score-value")[0].innerHTML = points;
 }
