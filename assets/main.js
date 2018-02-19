@@ -84,7 +84,7 @@ function startCron () {
 
 function move () {
     var nextCell = getNextCell();
-    if (isSnakeCell(nextCell)) {
+    if (isSnakeCell(nextCell) || isOutGrid(nextCell)) {
         lose();
     }
     else if (isFoodCell(nextCell)) {
@@ -93,6 +93,10 @@ function move () {
     else{
         moveFoward();
     }
+}
+
+function isOutGrid (cell) {
+    return (cell[0] < 0 || cell[0] >= gridRows || cell[1] < 0 || cell[1] >= gridCols);
 }
 
 function getNextCell () {
