@@ -55,3 +55,11 @@
     border: 0.5px solid #36393D;
     background-color: #F9F7ED;
 }
+
+.snake-cell {
+    background-color: #FFCC99;
+}
+
+.food-cell {
+    background-color: #CDEB8B;
+}

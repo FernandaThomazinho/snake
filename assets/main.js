@@ -4,11 +4,12 @@ var gridCols = 16;
 var gridRows = 16;
 var cron = null;
 var snake = [[2,3], [1,3], [1,2], [1,1]];
-var direction = ["r"];
+var direction = "r";
 var food = [4,3];
 var gridCells = getGridCells();
 var grid = gridToMatrix(gridCells, gridCols, gridRows);
 var speed = 1;
+render();
 
 function getGridCells() {
     return $(".grid-cell");
@@ -16,13 +17,14 @@ function getGridCells() {
 
 function restart() {
     snake = [[2,3], [1,3], [1,2], [1,1]];
-    direction = ["r"];
+    direction = "r";
     food = [4,3];
     gridCells = getGridCells();
     grid = gridToMatrix(gridCells, gridCols, gridRows);
     speed = 1;
     clearInterval(cron);
     cron = null;
+    render();
 }
 
 function gridToMatrix(DOMGrid, gridCols, gridRows) {
@@ -74,9 +76,94 @@ function changeDirection (keyPressed) {
 }
 
 function startCron () {
-    cron = setInterval(handler, speed * 1000);
+    cron = setInterval(move, speed * 1000);
 }
 
-function handler (){
-    alert("Hi");
+function move () {
+    var nextCell = getNextCell();
+    if (isSnakeCell(nextCell)) {
+        lose();
+    }
+    else if (isFoodCell(nextCell)) {
+        eat();
+    }
+    else{
+        moveFoward();
+    }
+}
+
+function getNextCell () {
+    var nextCell = [];
+    var snakeHeadRow = snake[0][0];
+    var snakeHeadCol = snake[0][1];
+    
+    switch (direction) {
+        case "u":
+            nextCell[0] = snakeHeadRow - 1;
+            nextCell[1] = snakeHeadCol;
+            break;
+        case "r":
+            nextCell[0] = snakeHeadRow;
+            nextCell[1] = snakeHeadCol + 1;
+            break;
+        case "d":
+            nextCell[0] = snakeHeadRow + 1;
+            nextCell[1] = snakeHeadCol;
+            break;
+        case "l":
+            nextCell[0] = snakeHeadRow;
+            nextCell[1] = snakeHeadCol - 1;
+            break;
+    }
+    return nextCell;
+}
+
+function isEmptyCell (cell) {
+    return (isFoodCell(cell) || isSnakeCell(cell));
+}
+
+function isSnakeCell (cell) {
+    for (i=0; i < snake.length; i++) {
+        if ((cell[0] == snake[i][0]) && (cell[1] == snake[i][1])) return true;
+    }
+    return false;
+}
+
+function isFoodCell (cell) {
+    return ((cell[0] == food[0]) && (cell[1] == food[1]));
+}
+
+function moveFoward () {
+    snake.unshift(getNextCell());
+    snake.pop();
+    render();
+}
+
+function eat () {
+    snake.unshift(getNextCell());
+    render();
+}
+
+function lose () {
+    restart();
+    alert("Game Over");
+}
+
+function render () {
+    var row = 0;
+    var col = 0;
+    for (row=0; row<gridRows; row++) {
+        for (col=0; col<gridCols; col++) {
+            $(grid[row][col]).removeClass("snake-cell");
+            $(grid[row][col]).removeClass("food-cell");
+        }
+    }
+    for (i=0; i<snake.length; i++) {
+        row = snake[i][0];
+        col = snake[i][1];
+        $(grid[row][col]).addClass("snake-cell");
+    }
+    row = food[0];
+    col = food[1];
+    $(grid[row][col]).addClass("food-cell");
 }
