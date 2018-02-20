@@ -4,7 +4,7 @@ var gridCols = 16;
 var gridRows = 16;
 var cron = null;
 var snake = [[2,3], [1,3], [1,2], [1,1]];
-var direction = "r";
+var currentDirection = "r";
 var food = [];
 generateFood();
 var gridCells = getGridCells();
@@ -19,7 +19,7 @@ function getGridCells() {
 
 function restart() {
   snake = [[2,3], [1,3], [1,2], [1,1]];
-  direction = "r";
+  currentDirection = "r";
   generateFood();
   gridCells = getGridCells();
   grid = gridToMatrix(gridCells, gridCols, gridRows);
@@ -64,22 +64,34 @@ function isArrow(keyPressed) {
 function changeDirection (keyPressed) {
   switch(keyPressed) {
     case 37:
-      direction = "l";
+      var nextCell = getNextCell("l");
+      if (sameCell(snake[1], nextCell)) break;
+      currentDirection = "l";
       break;
     case 38:
-      direction = "u";
+      var nextCell = getNextCell("u");
+      if (sameCell(snake[1], nextCell)) break;
+      currentDirection = "u";
       break;
     case 39:
-      direction = "r";
+      var nextCell = getNextCell("r");
+      if (sameCell(snake[1], nextCell)) break;
+      currentDirection = "r";
       break;
     case 40:
-      direction = "d";
+      var nextCell = getNextCell("d");
+      if (sameCell(snake[1], nextCell)) break;
+      currentDirection = "d";
       break;
   }
 }
 
 function startCron () {
   cron = setInterval(move, 200 - (Math.log(speed) * 25));
+}
+
+function sameCell (firstCell, secondCell) {
+  return (firstCell[0] == secondCell[0] && firstCell[1] == secondCell[1]);
 }
 
 function move () {
@@ -99,12 +111,20 @@ function isOutGrid (cell) {
   return (cell[0] < 0 || cell[0] >= gridRows || cell[1] < 0 || cell[1] >= gridCols);
 }
 
-function getNextCell () {
+function getNextCell (otherDirection) {
   var nextCell = [];
   var snakeHeadRow = snake[0][0];
   var snakeHeadCol = snake[0][1];
-  
-  switch (direction) {
+  var directionToUse = "";
+
+  if (otherDirection) {
+    directionToUse = otherDirection;
+  }
+  else {
+    directionToUse = currentDirection;
+  }
+
+  switch (directionToUse) {
     case "u":
       nextCell[0] = snakeHeadRow - 1;
       nextCell[1] = snakeHeadCol;
