@@ -20,7 +20,7 @@ function getGridCells() {
 function restart() {
     snake = [[2,3], [1,3], [1,2], [1,1]];
     direction = "r";
-    food = [4,3];
+    generateFood();
     gridCells = getGridCells();
     grid = gridToMatrix(gridCells, gridCols, gridRows);
     speed = 1;
@@ -79,7 +79,7 @@ function changeDirection (keyPressed) {
 }
 
 function startCron () {
-    cron = setInterval(move, speed * 1000);
+    cron = setInterval(move, 800 - (speed * 100));
 }
 
 function move () {
@@ -155,7 +155,9 @@ function eat () {
 }
 
 function speedUp () {
-    speed *= 0.9;
+    speed ++;
+    clearInterval(cron);
+    startCron();
 }
 
 function generateFood () {
