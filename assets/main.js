@@ -79,7 +79,7 @@ function changeDirection (keyPressed) {
 }
 
 function startCron () {
-  cron = setInterval(move, 800 - (speed * 100));
+  cron = setInterval(move, 200 - (Math.log(speed) * 25));
 }
 
 function move () {
@@ -88,10 +88,10 @@ function move () {
     lose();
   }
   else if (isFoodCell(nextCell)) {
-    eat();
+    eat(nextCell);
   }
   else{
-    moveFoward();
+    moveFoward(nextCell);
   }
 }
 
@@ -140,15 +140,15 @@ function isFoodCell (cell) {
   return ((cell[0] == food[0]) && (cell[1] == food[1]));
 }
 
-function moveFoward () {
-  snake.unshift(getNextCell());
+function moveFoward (nextCell) {
+  snake.unshift(nextCell);
   snake.pop();
   render();
 }
 
-function eat () {
+function eat (nextCell) {
   points ++;
-  snakeGrow();
+  snakeGrow(nextCell);
   generateFood();
   speedUp();
   render();
@@ -170,8 +170,8 @@ function generateFood () {
   food = [row,col];
 }
 
-function snakeGrow () {
-  snake.unshift(getNextCell());
+function snakeGrow (nextCell) {
+  snake.unshift(nextCell);
 }
 
 function lose () {
