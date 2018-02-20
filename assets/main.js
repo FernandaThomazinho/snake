@@ -1,5 +1,3 @@
-$("#restart-button").click(restart);
-
 var gridCols = 16;
 var gridRows = 16;
 var cron = null;
@@ -12,6 +10,12 @@ var grid = gridToMatrix(gridCells, gridCols, gridRows);
 var speed = 1;
 var points = 0;
 render();
+
+$("#restart-button").click(restart);
+
+$(document).ready(function () {
+  $(document).keydown(getDirection);
+});
 
 function getGridCells() {
   return $(".grid-cell");
@@ -44,10 +48,6 @@ function gridToMatrix(DOMGrid, gridCols, gridRows) {
   }
   return grid;
 }
-
-$(document).ready(function () {
-  $(document).keydown(getDirection);
-});
 
 function getDirection() {
   var keyPressed = event.which;
